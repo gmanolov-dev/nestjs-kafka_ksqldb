@@ -1,11 +1,11 @@
 ## Requirements:
 Node: v14.16.1
 
-## docker-compose build
+## docker-compose environment
 
 ```
 # build the images
-docker-compose build --force-rm --no-cache crypto-ticker-listener
+docker-compose build --force-rm --no-cache
 # run the envirnment
 docker-compose -p ticker up
 ```
