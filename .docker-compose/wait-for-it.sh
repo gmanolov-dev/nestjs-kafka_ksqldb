@@ -1,0 +1,1 @@
+sleep 30 && npm run start:prod

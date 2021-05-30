@@ -15,7 +15,7 @@ const AmqpClientModule = RabbitMQModule.forRoot(RabbitMQModule, {
   uri: `amqp://${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`,
   connectionInitOptions: { wait: false },
   connectionManagerOptions: {
-
+    
   }
 });
 

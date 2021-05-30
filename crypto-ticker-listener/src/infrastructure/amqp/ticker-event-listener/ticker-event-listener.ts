@@ -16,8 +16,10 @@ export class TickerMessageListener {
   @RabbitSubscribe({
     exchange: process.env.AMQP_EXCHANGE,
     routingKey: process.env.AMQP_TOPIC,
+    errorHandler: (msg, err) => console.log(msg, err),
     queueOptions: {
       autoDelete: true,
+      
     }
   })
   public async pubSubHandler(msg: TickerEventMessage) {

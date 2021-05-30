@@ -14,22 +14,22 @@ export const TickerEventContext = createContext<
   });
 
 
-type Action = { type: 'change', data: TickerEvent[] } | {type: "setIsSubscribed", data: boolean};
-type State = {tickerEvents: TickerEvent[], isSubscribed: boolean};
+type Action = { type: 'change', data: TickerEvent[] } | { type: "setIsSubscribed", data: boolean };
+type State = { tickerEvents: TickerEvent[], isSubscribed: boolean };
 
 const reducer = (state: State, action: Action): State => {
 
   switch (action.type) {
     case "change": {
-      const newState:TickerEvent[] = Object.values([...state.tickerEvents, ...action.data].reduce((acc, el) => {
+      const newState: TickerEvent[] = Object.values([...state.tickerEvents, ...action.data].reduce((acc, el) => {
         return { ...acc, [`${el.exchange}-${el.pair}`]: el }
       }, {}));
 
       return {
         ...state,
-        tickerEvents: newState.sort((a, b) => `${a.exchange}-${a.pair}` > `${b.exchange}-${b.pair}` ? 1 : -1 ),
+        tickerEvents: newState.sort((a, b) => `${a.exchange}-${a.pair}` > `${b.exchange}-${b.pair}` ? 1 : -1),
       }
-      
+
     }
     case "setIsSubscribed": {
       return {
@@ -44,7 +44,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const TickerEventProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, {isSubscribed: false, tickerEvents: []});
+  const [state, dispatch] = useReducer(reducer, { isSubscribed: false, tickerEvents: [] });
   const receivedEventsRef = useRef<TickerEvent[]>([]);
 
   const eventsRef: MutableRefObject<EventSource | null> = useRef<EventSource | null>(null);
@@ -53,7 +53,7 @@ export const TickerEventProvider = ({ children }: { children: React.ReactNode })
       eventsRef.current.close();
       eventsRef.current = null;
     }
-    
+
     receivedEventsRef.current.length = 0;
     dispatch({
       type: "setIsSubscribed",
@@ -62,7 +62,8 @@ export const TickerEventProvider = ({ children }: { children: React.ReactNode })
   }, []);
 
   const subscribe = useCallback((filter: SubscriptionFilterDto): void => {
-    eventsRef.current = new EventSource(`http://localhost:3001/subscribe?filter=${JSON.stringify(filter)}`);
+    const sseUriBase = process && process.env && process.env.NODE_ENV === `development` ? `http://localhost:3001` : `/api`;
+    eventsRef.current = new EventSource(`${sseUriBase}/subscribe?filter=${JSON.stringify(filter)}`);
     eventsRef.current.onopen = (event) => {
       console.log(event);
     };
@@ -74,9 +75,9 @@ export const TickerEventProvider = ({ children }: { children: React.ReactNode })
 
     eventsRef.current.onerror = (event) => {
       console.log(event);
-      
+
     };
-    
+
     dispatch({
       type: "setIsSubscribed",
       data: true,

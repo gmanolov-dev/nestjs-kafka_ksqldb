@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { TickerEventListener as DomainTickerEventListener } from 'src/domain/ticker-message-listener';
 import { TickerEventMapper } from 'src/mappers/ticker-event-mapper';
 
-@Controller('subscribe')
+@Controller('/api/subscribe')
 export class EventTickerSubscribeController {
 
   constructor(

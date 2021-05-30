@@ -1,4 +1,26 @@
-## How to run it  
+## Requirements:
+Node: v14.16.1
+
+## docker-compose build
+
+```
+# build the images
+docker-compose build --force-rm --no-cache crypto-ticker-listener
+# run the envirnment
+docker-compose -p ticker up
+```
+
+![docker compose diagrame](./docker-compose-diagram.png)   
+
+#### Imortant note
+
+-p ticker parameter specify the project name  
+This way the deploy of the 3 crypto-ticker-listener containers are prefixed with the specified project name.  
+If this option is not set then they will be prefixed with the folder name  and it is most likely that the nginx container exit after it starts.  
+The configuration of the nginx ./docker-compose/nginx.conf depends on the names of the containers.  
+
+
+## Development run
   
 ### Start Rabbitmq in docker in case you don't want to install it on your local environment  
 cd .local-dev-docker-infrastructure

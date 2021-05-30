@@ -1,0 +1,72 @@
+Sending build context to Docker daemon  2.648MB
+Step 1/11 : FROM node:14.16.1-alpine
+ ---> c88490a07c2d
+Step 2/11 : RUN npm install -g npm@latest
+ ---> Using cache
+ ---> 37f9db7881ad
+Step 3/11 : WORKDIR /app/common
+ ---> Using cache
+ ---> 7dbf9eedf084
+Step 4/11 : COPY common .
+ ---> Using cache
+ ---> be90cea4354d
+Step 5/11 : RUN npm install
+ ---> Using cache
+ ---> da75e92c9485
+Step 6/11 : WORKDIR /app/coinbase-feed
+ ---> Using cache
+ ---> 7f77d544214c
+Step 7/11 : COPY coinbase-feed .
+ ---> a5c158eea230
+Step 8/11 : RUN npm install
+ ---> Running in 4ff0b48b839f
+[91mnpm WARN [0m[91mdeprecated urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+[0m[91mnpm WARN deprecated resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+[0m[91mnpm WARN deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+[0m
+added 956 packages, and audited 958 packages in 29s
+
+79 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+Removing intermediate container 4ff0b48b839f
+ ---> c8c96f1045c7
+Step 9/11 : RUN ls -la /app/coinbase-feed/node_modules/common
+ ---> Running in 36fe3e48dca6
+lrwxrwxrwx    1 root     root            17 May 29 05:50 /app/coinbase-feed/node_modules/common -> ../../common/dist
+Removing intermediate container 36fe3e48dca6
+ ---> 1fa372e049fc
+Step 10/11 : RUN npm run prebuild && npm run build
+ ---> Running in 60144241808a
+
+> coinbase-feed@0.0.1 prebuild
+> rimraf dist
+
+
+> coinbase-feed@0.0.1 prebuild
+> rimraf dist
+
+
+> coinbase-feed@0.0.1 build
+> nest build
+
+[91m[96msrc/domain/entities/ticker-event.ts[0m:[93m1[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module 'common/common/enums' or its corresponding type declarations.
+
+[7m1[0m import { TickerEventType } from "common/common/enums";
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/amqp/ticker-event-sender.ts[0m:[93m4[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module 'common/dtos/amqp/ticker-event-message' or its corresponding type declarations.
+
+[7m4[0m import { TickerEventMessage } from 'common/dtos/amqp/ticker-event-message';
+[7m [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/mappers/coinbase-ticker-mapper.ts[0m:[93m3[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module 'common/common/enums' or its corresponding type declarations.
+
+[7m3[0m import { TickerEventType } from 'common/common/enums';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/mappers/coinbase-ticker-mapper.ts[0m:[93m4[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module 'common/dtos/amqp/ticker-event-message' or its corresponding type declarations.
+
+[7m4[0m import { TickerEventMessage } from 'common/dtos/amqp/ticker-event-message';
+[7m [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[0mFound 4 error(s).
+
