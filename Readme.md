@@ -10,8 +10,11 @@ docker-compose build --force-rm --no-cache
 docker-compose -p ticker up
 ```
 
-#### Imortant note
+#### Imortant note 1
+You need to wait for 30 seconds, before trying to interact with the system.  
+I didn't find the time to check how I could ensure that the rabbitmq is up and running, that's why I set it sleep 30.  
 
+#### Imortant note 2
 -p ticker parameter specify the project name  
 This way the deploy of the 3 crypto-ticker-listener containers are prefixed with the specified project name.  
 If this option is not set then they will be prefixed with the folder name  and it is most likely that the nginx container exit after it starts.  
