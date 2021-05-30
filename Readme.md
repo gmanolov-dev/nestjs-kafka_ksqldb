@@ -87,9 +87,8 @@ Select crypto.ticker
 
 
 ### TODOs  
-- complete dockerized environment with nginx layer 7 proxy and 6 listener containers (crypto-ticker-listener)  
+- replace rabbitmq with kafka
 - kubernetes - documentation on how to setup kind, install load balancer and all the yaml fils for basic deployment  
 - code clean up  
-- basic documentaion on the software design and architecure  
 - ...  
    
