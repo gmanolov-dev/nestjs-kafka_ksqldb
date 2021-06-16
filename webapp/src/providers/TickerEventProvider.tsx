@@ -62,8 +62,8 @@ export const TickerEventProvider = ({ children }: { children: React.ReactNode })
   }, []);
 
   const subscribe = useCallback((filter: SubscriptionFilterDto): void => {
-    const sseUriBase = process && process.env && process.env.NODE_ENV === `development` ? `http://localhost:3001` : `/api`;
-    eventsRef.current = new EventSource(`${sseUriBase}/subscribe?filter=${JSON.stringify(filter)}`);
+    const sseUriBase = process && process.env && process.env.NODE_ENV === `development` ? `http://localhost:3001` : ``;
+    eventsRef.current = new EventSource(`${sseUriBase}/api/subscribe?filter=${JSON.stringify(filter)}`);
     eventsRef.current.onopen = (event) => {
       console.log(event);
     };

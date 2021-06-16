@@ -6,7 +6,7 @@ import { SubscriptionFilter } from '../../domain/entities/subscription-filter';
 
 @Injectable()
 export class TickerEventRepository {
-  private tickerEventSubject: ReplaySubject<TickerEvent> = new ReplaySubject<TickerEvent>(1);
+  private tickerEventSubject: ReplaySubject<TickerEvent> = new ReplaySubject<TickerEvent>(20);
 
   save(tickerEvent: TickerEvent): void {
     this.tickerEventSubject.next(tickerEvent);

@@ -16,6 +16,7 @@ export class TickerEventListener {
 
 
   registerEvent(tickerEvent: TickerEvent) {
+    console.log(tickerEvent);
     this.tickerEventRepository.save(tickerEvent);
   }
 }

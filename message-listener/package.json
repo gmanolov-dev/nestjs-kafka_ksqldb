@@ -1,5 +1,5 @@
 {
-  "name": "crypto-ticker-listener",
+  "name": "message-listener",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -21,12 +21,12 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^1.16.2",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.6.15",
     "@nestjs/platform-express": "^7.6.15",
     "common": "file:../common/dist",
+    "kafkajs": "^1.15.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6"

@@ -12,7 +12,7 @@ docker-compose -p ticker up
 
 #### Imortant note 1
 You need to wait for 30 seconds, before trying to interact with the system.  
-I didn't find the time to check how I could ensure that the rabbitmq is up and running, that's why I set it sleep 30.  
+I didn't find the time to check how I could ensure that the kafka is up and running, that's why I set it sleep 30.  
 
 #### Imortant note 2
 -p ticker parameter specify the project name  
@@ -25,13 +25,13 @@ The configuration of the nginx ./docker-compose/nginx.conf depends on the names 
 
 ## Development run
   
-### Start Rabbitmq in docker in case you don't want to install it on your local environment  
+### Start Kafka / KSQLDB in docker in case you don't want to install it on your local environment  
 cd .local-dev-docker-infrastructure
 docker-compose up -d
 cd ..
   
   
-### Build the common it is used by the rest of project  
+### Build the common it - is used by the rest of project  
 ```
 cd common
 npm install
@@ -47,13 +47,13 @@ cd ..
 cd coinbase-feed
 npm install
 npm run build
-npm run start:prod
+npm run start:dev
 ```
 
 
 ### Build and run crypto-ticker-listener  
 ```
-cd crypto-ticker-listener
+cd message-listener
 npm install
 npm run build
 npm run start:prod
@@ -73,17 +73,12 @@ npm start
 http://localhost:3000  
 Deselect the pairs which you don't want to see  
 Clieck on the subscribe  
-Wait for 2 seconds.  
+Wait for 10 seconds.  
+Each 10 seconds the values should be updated
 
 
-#### RAbbitmq web interface  
-http://localhost:15672/  
-user: guest  
-pass: guest  
-
-Go to exchanges  
-Select crypto.ticker  
-
+#### Confluent Control center web interface  
+http://localhost:9021/clusters
 
 
 ### TODOs  
