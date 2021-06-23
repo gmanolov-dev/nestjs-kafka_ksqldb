@@ -65,6 +65,9 @@ services:
       - 8080:80
     networks: 
       - web-network
+    depends_on: 
+      - message-listener
+      - configurator
     # mounting it here doesn't work. need some more time to investigate
     # will move it to the docker file (Dockerfile-webapp)
     # volumes: 
