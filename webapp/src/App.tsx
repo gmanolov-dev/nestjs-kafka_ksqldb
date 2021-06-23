@@ -1,27 +1,15 @@
 import React from 'react';
-import { Box, Grid, Paper, Container } from '@material-ui/core';
-import { SubscriptionChooser } from './features/subscription-chooser/SubscriptionChooser';
-import { Dashboard } from './features/dashboard/Dashboard';
+import { Container } from '@material-ui/core';
 import { SubscriptionFilterOptionsProvider } from './providers/SubscriptionFilterOptionsProvider';
 import { TickerEventProvider } from './providers/TickerEventProvider';
+import { Layout } from './layout/Layout';
 
 function App() {
   return (
     <Container maxWidth="lg">
       <SubscriptionFilterOptionsProvider>
         <TickerEventProvider>
-          <Grid container spacing={4}>
-            <Grid item xs={4}>
-              <Paper>
-                <Box p={4}>
-                  <SubscriptionChooser />
-                </Box>
-              </Paper>
-            </Grid>
-            <Grid item xs={8}>
-              <Dashboard />
-            </Grid>
-          </Grid>
+          <Layout />
         </TickerEventProvider>
       </SubscriptionFilterOptionsProvider>
     </Container>

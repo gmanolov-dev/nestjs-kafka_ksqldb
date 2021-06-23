@@ -1,56 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Observable, ReplaySubject } from 'rxjs';
 import { CoinbasePro, WebSocketChannelName, WebSocketEvent, WebSocketTickerMessage } from 'coinbase-pro-node';
+import { TickerEvent } from 'src/domain/entities/ticker-event';
+import { map } from 'rxjs/operators';
+import { CoinbaseTickerMapper } from 'src/mappers/coinbase-ticker-mapper';
 
 @Injectable()
-export class ConibaseConnector {
-  private feed: ReplaySubject<WebSocketTickerMessage>;
+export class ConibaseConnector implements OnModuleInit, OnModuleDestroy {
+  private feed: ReplaySubject<WebSocketTickerMessage> = new ReplaySubject<WebSocketTickerMessage>(1);;
+  client: CoinbasePro;
 
-  getFeed(): Observable<WebSocketTickerMessage> {
-    if (this.feed) {
-      return this.feed;
-    }
-
-    this.feed = new ReplaySubject<WebSocketTickerMessage>(1);
-    this.initializeFeed(this.feed);
-    return this.feed;
+  constructor(
+    private readonly coinbaseTickerMapper: CoinbaseTickerMapper,
+  ) {};
+  
+  onModuleInit() {
+    this.client = new CoinbasePro();
+    this.client.ws.on(WebSocketEvent.ON_MESSAGE_TICKER, tickerMessage => {
+      this.feed.next(tickerMessage);
+    });
+    this.client.ws.connect();
   }
 
-  private initializeFeed(feed: ReplaySubject<WebSocketTickerMessage>) {
+  onModuleDestroy() {
+    this.feed.complete();
+    this.client.ws.disconnect();
+  }
 
-    const client = new CoinbasePro();
-    // 2. Setup WebSocket channel info
+  getFeed(): Observable<TickerEvent> {
+    return this.feed.pipe(
+      map(this.coinbaseTickerMapper.fromWebSocketTickerMessage)
+    );
+  }
+
+  subscribe(product_ids: string[]) {
+    console.log("subscribe");
+    if (this.client) {
+      this.client.ws.unsubscribe(WebSocketChannelName.TICKER);
+    }
+
     const channel = {
       name: WebSocketChannelName.TICKER,
-      product_ids: [
-        'BTC-USD',
-        'BTC-EUR',
-        'ETH-USD',
-        'ETH-EUR',
-      ],
+      product_ids,
     };
-
-    // 3. Wait for open WebSocket to send messages
-    client.ws.on(WebSocketEvent.ON_OPEN, () => {
-      // 7. Subscribe to WebSocket channel
-      client.ws.subscribe([channel]);
-    });
-
-    // 4. Listen to WebSocket subscription updates
-    client.ws.on(WebSocketEvent.ON_SUBSCRIPTION_UPDATE, subscriptions => {
-      // When there are no more subscriptions...
-      if (subscriptions.channels.length === 0) {
-        // 10. Disconnect WebSocket (and end program)
-        client.ws.disconnect();
-      }
-    });
-
-    // 5. Listen to WebSocket channel updates
-    client.ws.on(WebSocketEvent.ON_MESSAGE_TICKER, tickerMessage => {
-      feed.next(tickerMessage);
-    });
-
-    // 6. Connect to WebSocket
-    client.ws.connect();
+    this.client.ws.subscribe([channel]);
   }
 }

@@ -1,6 +1,6 @@
 import { TickerEvent } from "../model";
-import { TickerEventDto } from "common/dtos/http/ticker-event-dto";
+import { MessageEventDto } from "common/dtos/http";
 
-export const fromTickerEventDto = (tickerEventDto: TickerEventDto): TickerEvent => {
-  return new TickerEvent({...tickerEventDto});
+export const fromTickerEventDto = (messageEventDto: MessageEventDto): TickerEvent => {
+  return new TickerEvent(JSON.parse(messageEventDto.data));
 }

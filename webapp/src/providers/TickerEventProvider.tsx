@@ -1,21 +1,22 @@
 import React, { createContext, MutableRefObject, useCallback, useEffect, useReducer, useRef } from "react";
 import { TickerEvent } from "../model";
 import { SubscriptionFilterDto } from "common/dtos/http/subscription-filter-dto";
+import { addEventListener, setFilter } from "../infrastructure/message-listener";
 
 export const TickerEventContext = createContext<
   {
     tickerEvents: TickerEvent[],
-    subscribe?: (filter: SubscriptionFilterDto) => void,
+    subscribe?: (filter: SubscriptionFilterDto[]) => void,
     unsubscribe?: () => void,
-    isSubscribed: boolean,
+    selectedFilter: SubscriptionFilterDto[],
   }>({
     tickerEvents: [],
-    isSubscribed: false,
+    selectedFilter: [],
   });
 
 
-type Action = { type: 'change', data: TickerEvent[] } | { type: "setIsSubscribed", data: boolean };
-type State = { tickerEvents: TickerEvent[], isSubscribed: boolean };
+type Action = { type: 'change', data: TickerEvent[] } | { type: "setSelectedFilter", data: SubscriptionFilterDto[] };
+type State = { tickerEvents: TickerEvent[], selectedFilter:  SubscriptionFilterDto[] };
 
 const reducer = (state: State, action: Action): State => {
 
@@ -31,11 +32,11 @@ const reducer = (state: State, action: Action): State => {
       }
 
     }
-    case "setIsSubscribed": {
+    case "setSelectedFilter": {
       return {
         ...state,
         tickerEvents: action.data ? state.tickerEvents : [],
-        isSubscribed: action.data,
+        selectedFilter: action.data,
       };
     }
     default:
@@ -44,58 +45,40 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const TickerEventProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, { isSubscribed: false, tickerEvents: [] });
+  const [state, dispatch] = useReducer(reducer, { selectedFilter: [], tickerEvents: [] });
   const receivedEventsRef = useRef<TickerEvent[]>([]);
+  const unsubscribeRef: MutableRefObject<Function | null> = useRef<Function>(null);
 
-  const eventsRef: MutableRefObject<EventSource | null> = useRef<EventSource | null>(null);
+  
   const unsubscribe = useCallback(() => {
-    if (eventsRef.current !== null) {
-      eventsRef.current.close();
-      eventsRef.current = null;
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
     }
 
-    receivedEventsRef.current.length = 0;
     dispatch({
-      type: "setIsSubscribed",
-      data: false,
+      type: "setSelectedFilter",
+      data: [],
     });
   }, []);
 
-  const subscribe = useCallback((filter: SubscriptionFilterDto): void => {
-    const sseUriBase = process && process.env && process.env.NODE_ENV === `development` ? `http://localhost:3001` : ``;
-    eventsRef.current = new EventSource(`${sseUriBase}/api/subscribe?filter=${JSON.stringify(filter)}`);
-    eventsRef.current.onopen = (event) => {
-      console.log(event);
-    };
-
-    // TODO: change any
-    eventsRef.current.addEventListener<any>("ticker", (event: MessageEvent) => {
-      receivedEventsRef.current.push(JSON.parse(event.data));
+  const subscribe = useCallback((filter: SubscriptionFilterDto[]): void => {
+    unsubscribeRef.current = addEventListener("ticker", (event) => {
+      console.log("here");
+      console.log(JSON.parse((event as MessageEvent).data));
+      dispatch({
+        type: "change",
+        data: [JSON.parse((event as MessageEvent).data)],
+      });
     });
 
-    eventsRef.current.onerror = (event) => {
-      console.log(event);
-
-    };
+    setFilter(filter);
 
     dispatch({
-      type: "setIsSubscribed",
-      data: true,
+      type: "setSelectedFilter",
+      data: filter,
     });
   }, [dispatch]);
-
-  useEffect(() => {
-    setInterval(() => {
-      if (receivedEventsRef.current.length) {
-        dispatch({
-          type: "change",
-          data: [...receivedEventsRef.current],
-        });
-        receivedEventsRef.current.length = 0;
-      }
-    }, 1000);
-  }, [dispatch]);
-
 
   return <TickerEventContext.Provider value={{
     ...state,

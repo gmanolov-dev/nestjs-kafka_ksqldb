@@ -1,14 +1,15 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { DomainModule } from 'src/domain/domain.module';
 import { MappersModule } from 'src/mappers/mappers.module';
-import { TickerMessageListener } from './amqp/ticker-event-listener/ticker-event-listener';
+import { ConfigurationSubscriber } from './amqp/configuration-subscriber';
+import { TickerMessageSubscriber } from './amqp/ticker-message-subscriber';
 import { EventTickerSubscribeController } from './http/event-ticker-subscribe/event-ticker-subscribe.controller';
-import { TickerEventRepository } from './repositories/ticker-event-repository';
+import { InfrastructureFacade } from './infrastructure.facade';
 
 @Module({
   imports: [MappersModule, forwardRef(() => DomainModule)],
-  providers: [TickerMessageListener, TickerEventRepository],
+  providers: [TickerMessageSubscriber, InfrastructureFacade, ConfigurationSubscriber],
   controllers: [EventTickerSubscribeController],
-  exports: [TickerEventRepository]
+  exports: [InfrastructureFacade]
 })
 export class InfrastructureModule { }

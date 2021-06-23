@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TickerEventMessage } from "common/dtos/amqp/ticker-event-message";
-import { SubscriptionFilterDto, TickerEventDto } from 'common/dtos/http';
+import { SubscriptionFilterDto } from 'common/dtos/http';
 import { SubscriptionFilter } from 'src/domain/entities/subscription-filter';
 import { TickerEvent } from 'src/domain/entities/ticker-event';
 
@@ -12,19 +12,10 @@ export class TickerEventMapper {
     )
   };
 
-  toTickerEventDto(tickerEvent: TickerEvent): TickerEventDto {
-    return new TickerEventDto({
-      ...tickerEvent,
-    });
-  }
-
-  toSubscriptionFilter(filter?: SubscriptionFilterDto): SubscriptionFilter {
+  toSubscriptionFilter(filter: SubscriptionFilterDto[]): SubscriptionFilter[] {
     if (!filter) {
       return null;
     }
-
-    return new SubscriptionFilter(
-      { ...filter }
-    );
+    return filter.map(el => new SubscriptionFilter(el.exchange, el.pairs));
   }
 }

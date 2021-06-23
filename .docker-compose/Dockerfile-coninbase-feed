@@ -31,5 +31,5 @@ COPY .docker-compose/wait-for-it.sh .
 RUN chmod +x wait-for-it.sh
 COPY --from=build /app .
 WORKDIR /app/coinbase-feed
-# TODO: find different way to wait for rabbitmq. depends_on don't make the trick
+# TODO: find different way to wait for ksqldb server. depends_on don't make the trick
 CMD [ "/bin/sh", "../wait-for-it.sh" ]

@@ -1,9 +1,3 @@
 export class SubscriptionFilter {
-  readonly pairs?: string[];
-  readonly exchanges?: string[];
-
-  constructor(data: { pairs?: string[], exchanges?: string[] }) {
-    this.pairs = data.pairs;
-    this.exchanges = data.exchanges;
-  }
+  constructor(public exchange: string, public pairs: string[] ) {}
 }

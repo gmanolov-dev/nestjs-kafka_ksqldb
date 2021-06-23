@@ -100,11 +100,49 @@ services:
       # Starting in headless mode
       KSQL_KSQL_QUERIES_FILE: '/etc/ksqldb/ksql.init.sql'
   # Don't create ksqldb-cli container wher it runs in headless mode
-  # ksqldb-cli:
-  #   image: confluentinc/ksqldb-cli:0.17.0
-  #   container_name: ksqldb-cli
-  #   depends_on:
-  #     - broker
-  #     - ksqldb-server
-  #   entrypoint: /bin/sh
-  #   tty: true
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:0.17.0
+    container_name: ksqldb-cli
+    depends_on:
+      - broker
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
+  # Mongo and mongo express
+  mongodb:
+    container_name: mongo-dev
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root123!
+      MONGO_INITDB_DATABASE: configurator
+      MONGO_INITDB_USERNAME: root
+      MONGO_INITDB_PASSWORD: root123!
+    ports:
+    - "27017-27019:27017-27019"
+      # - 27017:27017
+    volumes:
+      - $PWD/mongo-replica-set-keyfile.key:/data/replica.key.1
+      - $PWD/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+    entrypoint:
+        - bash
+        - -c
+        - |
+            cp /data/replica.key.1 /data/replica.key
+            chmod 400 /data/replica.key
+            chown 999:999 /data/replica.key
+            exec docker-entrypoint.sh $$@     
+    command: "mongod --bind_ip_all --replSet rs0 --keyFile /data/replica.key"
+
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root123!
+      ME_CONFIG_MONGODB_SERVER: mongo-dev
+  

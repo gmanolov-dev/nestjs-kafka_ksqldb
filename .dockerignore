@@ -56,5 +56,4 @@ build
 .env.production.local
 
 # Custom
-.local-dev-docker-infrastructure/.docker
 .docker-compose/.data
