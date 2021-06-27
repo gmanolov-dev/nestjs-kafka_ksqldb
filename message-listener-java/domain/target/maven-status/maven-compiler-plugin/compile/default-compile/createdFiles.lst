@@ -1,0 +1,7 @@
+com/ticker/message/listener/domain/services/MessageAggregator.class
+com/ticker/message/listener/domain/entities/TickerEvent.class
+module-info.class
+com/ticker/message/listener/domain/dtos/SubscriptionFilterDto.class
+com/ticker/message/listener/domain/mapper/MessageMapper.class
+com/ticker/message/listener/domain/entities/ConfigurationEvent.class
+com/ticker/message/listener/domain/MessageListener.class

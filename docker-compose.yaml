@@ -41,7 +41,7 @@ services:
   message-listener:
     build: 
       context: .
-      dockerfile: .docker-compose/Dockerfile-message-listener
+      dockerfile: .docker-compose/Dockerfile-message-listener-java
     image: message-listener
     depends_on: 
       - ksqldb-server

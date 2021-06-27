@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OrderSide, WebSocketTickerMessage } from 'coinbase-pro-node';
 import { TickerEventType } from 'common/common/enums';
-import { TickerEventMessage } from 'common/dtos/amqp/ticker-event-message';
+import { TickerEventMessage } from 'common/dtos/kafka/ticker-event-message';
 import { TickerEvent } from 'src/domain/entities/ticker-event';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TickerEventMessage } from "common/dtos/amqp/ticker-event-message";
+import { TickerEventMessage } from "common/dtos/kafka/ticker-event-message";
 import { SubscriptionFilterDto } from 'common/dtos/http';
 import { SubscriptionFilter } from 'src/domain/entities/subscription-filter';
 import { TickerEvent } from 'src/domain/entities/ticker-event';

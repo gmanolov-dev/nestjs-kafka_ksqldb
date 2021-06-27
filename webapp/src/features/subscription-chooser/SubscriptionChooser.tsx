@@ -22,7 +22,7 @@ export const SubscriptionChooser = () => {
 
   useEffect(() => {
     setSelectedPairs(toSubscriptionPairs(exchangesConfig, selectedFilter));
-  }, [exchangesConfig])
+  }, [exchangesConfig, selectedFilter])
 
   const handlePairChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPairs = [...selectedPairs];

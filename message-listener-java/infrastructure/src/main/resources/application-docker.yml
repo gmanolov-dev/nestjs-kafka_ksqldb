@@ -1,0 +1,3 @@
+spring:
+  kafka:
+    bootstrap-servers: broker-prod:29092

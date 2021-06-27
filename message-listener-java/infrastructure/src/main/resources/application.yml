@@ -1,0 +1,22 @@
+server:
+  port: 3001
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            use:
+              type:
+                headers: false
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring:
+        json:
+          trusted:
+            packages: '*'
+EXCHANGE_CONFIG_TOPIC: feed.configuration
+EXCHANGE_TICKER_TOPIC: exchange_pair_prices_table_last

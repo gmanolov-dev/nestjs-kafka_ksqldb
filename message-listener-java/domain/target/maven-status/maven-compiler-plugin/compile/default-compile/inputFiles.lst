@@ -1,0 +1,7 @@
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/dtos/SubscriptionFilterDto.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/module-info.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/MessageListener.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/services/MessageAggregator.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/entities/TickerEvent.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/mapper/MessageMapper.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/domain/src/main/java/com/ticker/message/listener/domain/entities/ConfigurationEvent.java

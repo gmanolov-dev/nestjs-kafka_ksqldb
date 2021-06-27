@@ -1,0 +1,5 @@
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/common/src/main/java/com/ticker/message/listener/common/dtos/kafka/FeedConfigMessage.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/common/src/main/java/com/ticker/message/listener/common/enums/TickerEventType.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/common/src/main/java/module-info.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/common/src/main/java/com/ticker/message/listener/common/dtos/kafka/TickerEventMessage.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/common/src/main/java/com/ticker/message/listener/common/dtos/http/MessageEventDto.java

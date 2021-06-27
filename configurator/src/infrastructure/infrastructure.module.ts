@@ -2,8 +2,8 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DomainModule } from 'src/domain/domain.module';
 import { MappersModule } from 'src/mappers/mappers.module';
-import { FeedConfigurationChangeSender } from './amqp/feed-configuration-changed-sender';
-import { RegisterFeedSubscriber } from './amqp/register-feed-subscriber';
+import { FeedConfigurationChangeProducer } from './kafka/feed-configuration-changed-producer';
+import { RegisterFeedConsumer } from './kafka/register-feed-consumer';
 import { ExchangeEntity } from './datasource/entity/exchange.entity';
 import { ExchangeFeedConfigService } from './datasource/exchange-feed-config.service';
 import { UpdateConfigController } from './http/update-config.controller';
@@ -43,7 +43,7 @@ console.log({
     forwardRef(() => DomainModule),
   ],
   controllers: [UpdateConfigController],
-  providers: [InfrastructureFacade, RegisterFeedSubscriber, ExchangeFeedConfigService, FeedConfigurationChangeSender],
+  providers: [InfrastructureFacade, RegisterFeedConsumer, ExchangeFeedConfigService, FeedConfigurationChangeProducer],
   exports: [InfrastructureFacade]
 })
 export class InfrastructureModule { }

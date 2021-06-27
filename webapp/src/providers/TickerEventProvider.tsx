@@ -1,4 +1,4 @@
-import React, { createContext, MutableRefObject, useCallback, useEffect, useReducer, useRef } from "react";
+import React, { createContext, MutableRefObject, useCallback, useReducer, useRef } from "react";
 import { TickerEvent } from "../model";
 import { SubscriptionFilterDto } from "common/dtos/http/subscription-filter-dto";
 import { addEventListener, setFilter } from "../infrastructure/message-listener";
@@ -35,7 +35,7 @@ const reducer = (state: State, action: Action): State => {
     case "setSelectedFilter": {
       return {
         ...state,
-        tickerEvents: action.data ? state.tickerEvents : [],
+        tickerEvents: action.data.length ? state.tickerEvents : [],
         selectedFilter: action.data,
       };
     }
@@ -46,7 +46,6 @@ const reducer = (state: State, action: Action): State => {
 
 export const TickerEventProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, { selectedFilter: [], tickerEvents: [] });
-  const receivedEventsRef = useRef<TickerEvent[]>([]);
   const unsubscribeRef: MutableRefObject<Function | null> = useRef<Function>(null);
 
   

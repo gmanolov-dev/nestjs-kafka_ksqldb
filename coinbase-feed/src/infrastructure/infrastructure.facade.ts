@@ -2,29 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { TickerEvent } from 'src/domain/entities/ticker-event';
 import { CoinbaseTickerMapper } from 'src/mappers/coinbase-ticker-mapper';
-import { FeedConfigMessage } from '../../../common/dist/dtos/amqp';
-import { ConfigFeedSubscriber } from './amqp/config-feed-subscriber';
-import { RegisterFeedSender } from './amqp/register-feed-sender';
-import { TickerEventSender } from './amqp/ticker-event-sender';
+import { FeedConfigMessage } from '../../../common/dist/dtos/kafka';
+import { ConfigFeedConsumer } from './kafka/config-feed-consumer';
+import { RegisterFeedProducer } from './kafka/register-feed-producer';
+import { TickerEventProducer } from './kafka/ticker-event-producer';
 import { ConibaseConnector } from './connectors/conibase-connector';
 
 @Injectable()
 export class InfrastructureFacade {
 
   constructor(
-    private readonly configFeedSubscriber: ConfigFeedSubscriber,
-    private readonly registerFeedSender: RegisterFeedSender,
+    private readonly configFeedConsumer: ConfigFeedConsumer,
+    private readonly registerFeedProducer: RegisterFeedProducer,
     private readonly conibaseConnector: ConibaseConnector,
-    private readonly tickerEventSender: TickerEventSender,
+    private readonly tickerEventProducer: TickerEventProducer,
     private readonly coinbaseTickerMapper: CoinbaseTickerMapper,
   ) { }
 
   registerService(availablePairs: string[]): void {
-    this.registerFeedSender.registerFeedService(availablePairs);
+    this.registerFeedProducer.registerFeedService(availablePairs);
   }
 
   async getFeedConfig(): Promise<Observable<FeedConfigMessage>> {
-    return await this.configFeedSubscriber.getFeedConfig();
+    return await this.configFeedConsumer.getFeedConfig();
   }
 
   getFeed(): Observable<TickerEvent> {
@@ -36,6 +36,6 @@ export class InfrastructureFacade {
   }
 
   saveEvent(tickerEvent: TickerEvent): void {
-    this.tickerEventSender.send(this.coinbaseTickerMapper.toTickerMessage(tickerEvent));
+    this.tickerEventProducer.send(this.coinbaseTickerMapper.toTickerMessage(tickerEvent));
   }
 }

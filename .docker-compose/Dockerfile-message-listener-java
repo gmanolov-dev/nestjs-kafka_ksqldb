@@ -1,0 +1,10 @@
+FROM maven:3-openjdk-16-slim
+COPY ./message-listener-java/ /usr/app/
+WORKDIR /usr/app
+RUN ls
+
+
+RUN mvn -f /usr/app/pom.xml clean package
+
+EXPOSE 3001
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=docker", "application/target/application-1.0-SNAPSHOT.jar"]

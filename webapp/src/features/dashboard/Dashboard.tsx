@@ -12,8 +12,8 @@ export const Dashboard = () => {
       {tickerEventContext.tickerEvents.map(el => <Grid key={`${el.exchange}-${el.pair}`} container>
         <Grid item xs={4}>{el.exchange}</Grid>
         <Grid item xs={4}>{el.pair}</Grid>
-        <Grid item xs={2}>{el.price}</Grid>
-        <Grid item xs={2}>{el.type}</Grid>
+        <Grid item xs={2} style={{textAlign: "right", paddingRight: 10}} >{el.price.toFixed(2)}</Grid>
+        <Grid item xs={2} style={{textAlign: "right"}} >{el.type}</Grid>
       </Grid>)}
     </Box>
   </Paper>;

@@ -17,7 +17,7 @@ const initListener = (filter?: SubscriptionFilterDto[]) => {
   
   
   if (filter) {
-    listener = new EventSource(`${sseUriBase}/api/subscribe?filter=${JSON.stringify(filter)}`);
+    listener = new EventSource(`${sseUriBase}/api/subscribe?filter=${encodeURIComponent(JSON.stringify(filter))}`);
   } else {
     listener = new EventSource(`${sseUriBase}/api/subscribe`);
   }

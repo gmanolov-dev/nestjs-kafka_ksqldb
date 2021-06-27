@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ExchangeFeedConfigEntity } from 'src/domain/entities/exchange-feed-config.entity';
 import { ExchangeFeedEntity } from 'src/domain/entities/exchange-feed.entity';
-import { FeedConfigurationChangeSender } from './amqp/feed-configuration-changed-sender';
-import { RegisterFeedSubscriber } from './amqp/register-feed-subscriber';
+import { FeedConfigurationChangeProducer } from './kafka/feed-configuration-changed-producer';
+import { RegisterFeedConsumer } from './kafka/register-feed-consumer';
 import { ExchangeEntity } from './datasource/entity/exchange.entity';
 import { ExchangeFeedConfigService } from './datasource/exchange-feed-config.service';
 
@@ -11,18 +11,18 @@ import { ExchangeFeedConfigService } from './datasource/exchange-feed-config.ser
 export class InfrastructureFacade {
 
   constructor(
-    private readonly registerFeedSubscriber: RegisterFeedSubscriber,
+    private readonly registerFeedConsumer: RegisterFeedConsumer,
     private readonly exchangeFeedConfigService: ExchangeFeedConfigService,
-    private readonly feedConfigurationChangeSender: FeedConfigurationChangeSender,
+    private readonly feedConfigurationChangeProducer: FeedConfigurationChangeProducer,
   ) { }
 
   getAvailableFeeds(): Promise<Observable<ExchangeFeedEntity>> {
-    return this.registerFeedSubscriber.getAvailableFeeds();
+    return this.registerFeedConsumer.getAvailableFeeds();
   }
 
   async saveExchangeFeedEntity(exchangeFeedEntity: ExchangeFeedEntity) {
     const exchangeEntity: ExchangeEntity = await this.exchangeFeedConfigService.updateExchangeEntity(exchangeFeedEntity);
-    await this.feedConfigurationChangeSender
+    await this.feedConfigurationChangeProducer
       .sendConfigurationChanges({
         key: exchangeEntity.exchange,
         value: JSON.stringify(exchangeEntity.pairs)
@@ -31,7 +31,7 @@ export class InfrastructureFacade {
 
   async saveEchangeFeedConfigData(exchangeFeedConfigEntities: ExchangeFeedConfigEntity[]) {
     const exchangeEntity: ExchangeEntity[] = await this.exchangeFeedConfigService.updateMany(exchangeFeedConfigEntities);
-    await this.feedConfigurationChangeSender
+    await this.feedConfigurationChangeProducer
       .sendConfigurationChangesList(exchangeFeedConfigEntities.map(exchangeEntity => ({
         key: exchangeEntity.exchange,
         value: JSON.stringify(exchangeEntity.pairs)

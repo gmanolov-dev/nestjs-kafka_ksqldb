@@ -1,0 +1,8 @@
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/configuration/ReactiveKafkaConsumerConfig.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/kafka/TickerMessageConsumer.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/Infrastructure.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/module-info.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/kafka/ConfigMessageConsumer.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/mapper/DomainMapper.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/configuration/Cors.java
+/home/gmanolov/projects/nest/trading-poc/message-listener-java/infrastructure/src/main/java/com/ticker/message/listener/infrastructure/http/MessageListenerController.java
