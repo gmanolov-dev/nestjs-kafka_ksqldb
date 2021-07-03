@@ -1,0 +1,10 @@
+version: "3.9"
+networks: 
+  web:
+    external: true
+
+services:
+  test-client:
+    build: .
+    networks: 
+      - web

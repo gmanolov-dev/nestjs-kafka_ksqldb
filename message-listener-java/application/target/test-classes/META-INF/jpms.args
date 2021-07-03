@@ -1,0 +1,4 @@
+--patch-module
+com.ticker.message.listener.application=_
+--add-reads
+com.ticker.message.listener.application=ALL-UNNAMED
