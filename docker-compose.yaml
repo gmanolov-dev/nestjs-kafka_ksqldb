@@ -149,7 +149,7 @@ services:
   mongodb:
     hostname: mongo-prod
     container_name: mongo-prod
-    image: mongo
+    image: mongo:4.4.5
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
