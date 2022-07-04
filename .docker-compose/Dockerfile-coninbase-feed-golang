@@ -1,0 +1,13 @@
+FROM golang
+# RUN apk add build-base
+# RUN apk add --no-cache git gcc
+
+WORKDIR /go/src/app
+COPY .env/.env.docker ./.env
+
+COPY coinbase-feed-golang .
+
+
+RUN cd src/cmd && go mod download && go build  -o ../../coinbase-feed main.go && cd ../.. && chmod +x ./coinbase-feed
+
+CMD ["./coinbase-feed"]
