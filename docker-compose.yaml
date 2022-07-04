@@ -8,10 +8,10 @@ networks:
     name: mongo
 
 services:
-  coingase-feed:
+  coinbase-feed:
     build: 
       context: .
-      dockerfile: .docker-compose/Dockerfile-coninbase-feed
+      dockerfile: .docker-compose/Dockerfile-coninbase-feed-golang
     image: coinbase-feed
     depends_on: 
       - broker
