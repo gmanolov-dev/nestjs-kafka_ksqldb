@@ -45,10 +45,16 @@ class MessageService implements MessageComponentInterface
       return;
     }
     // {"action": "subscribe", "topic": "ticker", "pairs": ["BTC-USD"]}
-    if (($msgDecoded['action'] ?? null) == 'subscribe' && ($msgDecoded['topic'] ?? null) == 'ticker' && is_array($msgDecoded["pairs"] ?? null)) {
-      $this->subscribeToTicker($client, $msgDecoded['pairs']);
-    } else if ($msgDecoded['action'] ?? null == 'unsubscribe' && $msgDecoded['topic'] ?? null == 'ticker') {
-      $this->unsubscribeToTicker($client);
+    if (($msgDecoded['action'] ?? null) == 'subscribe' && ($msgDecoded['topic'] ?? null) == 'ticker' && is_array($msgDecoded["filter"] ?? null)) {
+      $this->subscribe($client, $msgDecoded['topic'], $msgDecoded['filter']);
+    } 
+    // {"action": "subscribe", "topic": "config"}
+    else if (($msgDecoded['action'] ?? null) == 'subscribe' && ($msgDecoded['topic'] ?? null) == 'configuration') {
+      $this->subscribe($client, $msgDecoded['topic'], null);
+    }
+    // {"action": "unsubscribe", "topic": "config|ticker"}
+    else if (($msgDecoded['action'] ?? null) == 'unsubscribe' && $msgDecoded['topic']) {
+      $this->unsubscribe($client, $msgDecoded['topic']);
     } 
   }
 
@@ -70,18 +76,18 @@ class MessageService implements MessageComponentInterface
     }
   }
 
-  private function subscribeToTicker(Client &$client, array $pairs): void {
+  private function subscribe(Client &$client, string $topic, mixed $payload): void {
     $disposable = $this->consumer
-        ->getTicker($pairs)
-        ->subscribe(function (TickerMessage $msg) use ($client) {
+        ->getObservable($topic, $payload)
+        ->subscribe(function (mixed $msg) use ($client, $topic) {
           $this->logger->debug("Sending data to client");
-          $client->getConn()->send(json_encode($msg, JSON_PRETTY_PRINT)."\n");
+          $client->getConn()->send(json_encode(["channel" => $topic, "message" => $msg], JSON_PRETTY_PRINT)."\n");
       });
-      $subscription = new Subscription("ticker", $pairs, $disposable);
+      $subscription = new Subscription($topic, $payload, $disposable);
       $client->addSubscription($subscription);
   }
 
-  private function unsubscribeToTicker(Client &$client): void {
-    $client->unsubscribe("ticker");
+  private function unsubscribe(Client &$client, string $topic): void {
+    $client->unsubscribe($topic);
   }
 }

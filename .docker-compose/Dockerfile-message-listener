@@ -1,35 +1,27 @@
-### STAGE 1: Build ###
-FROM node:14.16.1-alpine as build
+FROM php:8.2-cli-alpine3.17
 
-RUN npm install -g npm@latest
 
-WORKDIR /app/.env
-COPY .env/.env.docker .
+RUN apk add g++
+RUN apk add autoconf
+RUN apk add make
+RUN apk add librdkafka-dev
 
-WORKDIR /app/common
-COPY common .
-RUN npm install \
-  && npm run prebuild \
-  && npm run build \
-# Reducing the final size of the image
-  && find . -maxdepth 1 ! \( -name 'dist' -or -name '.' -or -name '..' \) -exec rm -rf {} + 
+RUN pecl install rdkafka
+RUN echo "extension=rdkafka.so" > /usr/local/etc/php/conf.d/rdkafka.ini
 
-WORKDIR /app/message-listener
-COPY message-listener .
-RUN npm install \
-  && npm run prebuild \
-  && npm run build
-# Reducing the final size of the image - NOT Possible nest is not designed this way
-# TODO: check how I could build includeing the node_modules
-# && find . -maxdepth 1 ! \( -name 'dist' -or -name '.' -or -name '..' \) -exec rm -rf {} +
+RUN apk add --no-cache bash
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash
+RUN apk add symfony-cli
 
-### STAGE 2: Run ###
-FROM node:14.16.1-alpine
-RUN npm install -g npm@latest
-WORKDIR /app
-COPY .docker-compose/wait-for-it.sh .
-RUN chmod +x wait-for-it.sh
-COPY --from=build /app .
-WORKDIR /app/message-listener
-# TODO: find different way to wait for ksqldb server. depends_on don't make the trick
-CMD [ "/bin/sh", "../wait-for-it.sh" ]
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+
+WORKDIR /app/message-listener-php
+COPY message-listener-php .
+COPY .env/.env.docker .env.prod
+RUN composer install
+RUN php bin/console cache:clear -e prod
+
+CMD [ "php", "bin/console", "app:start-websocket", "-vvv", "-e", "prod" ]

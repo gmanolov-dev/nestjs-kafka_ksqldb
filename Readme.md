@@ -37,7 +37,7 @@ In the diagram bellow you will be able to see the flow.
 The "steps" are marked as (< step number >).  
 
 
-![docker compose diagrame](./docker-compose-diagram.png)   
+![docker compose diagram](./docker-compose-diagram.png)   
 
 
 

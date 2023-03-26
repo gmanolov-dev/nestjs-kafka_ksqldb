@@ -8,8 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use App\Service\Websocket\MessageService;
+use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
-use React\EventLoop\Loop;
+use Ratchet\WebSocket\WsServer;
 use Rx\Observable;
 use Rx\Scheduler;
 
@@ -19,15 +20,24 @@ class StartWebsocketCommand extends Command {
   protected static $defaultDesctiption = "Starts ratchet websocket";
   protected MessageService $ms;
 
-  public function __construct(MessageService $ms) {
+  public function __construct(MessageService $ms, string $kafkaBrokers) {
     parent::__construct();
     $this -> ms = $ms;
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int
   {
-    $server = IoServer::factory($this -> ms, 8001);
+    $server = IoServer::factory(
+      new HttpServer(
+          new WsServer(
+              $this -> ms
+          )
+      ),
+      3001
+    );
     $loop = $server->loop;
+
+    
 
     Scheduler::setDefaultFactory(function() use($loop){
         return new Scheduler\EventLoopScheduler($loop);

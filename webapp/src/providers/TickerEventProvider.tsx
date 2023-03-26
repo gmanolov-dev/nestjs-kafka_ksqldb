@@ -64,8 +64,6 @@ export const TickerEventProvider = ({ children }: { children: React.ReactNode })
 
   const subscribe = useCallback((filter: SubscriptionFilterDto[]): void => {
     unsubscribeRef.current = addEventListener("ticker", (event) => {
-      console.log("here");
-      console.log(JSON.parse((event as MessageEvent).data));
       dispatch({
         type: "change",
         data: [JSON.parse((event as MessageEvent).data)],

@@ -14,7 +14,7 @@ class ClientsManager {
   }
 
 
-  public function &getClientByConn(ConnectionInterface $conn): ?Client {
+  public function getClientByConn(ConnectionInterface $conn): ?Client {
     foreach($this->clients as &$client) {
       if ($client->getConn() == $conn) {
         $this->logger->debug("Client found");
