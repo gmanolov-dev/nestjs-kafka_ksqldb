@@ -49,7 +49,7 @@ class KafkaTickerConsumer
       }
     });
     $conf->set('group.id', 'myConsumerGroup'.rand(1, 100000));
-    $conf->set('metadata.broker.list', 'broker-prod:29092');
+    $conf->set('metadata.broker.list', $this->kafkaTickerConsumerConfig->getKafkaBrokers());
     $conf->set('auto.offset.reset', 'earliest');
     $conf->set('enable.partition.eof', 'true');
     $consumer = new KafkaConsumer($conf);

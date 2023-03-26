@@ -1,6 +1,6 @@
 import { SubscriptionFilterDto } from "../../../common/dist/dtos/http/subscription-filter-dto";
 
-const webSocketUrl = process && process.env && process.env.NODE_ENV === `development` ? `ws://localhost:8001` : `ws://localhost:8080/message-listener`;
+const webSocketUrl = process && process.env && process.env.NODE_ENV === `development` ? `ws://localhost:3001` : `ws://localhost:8080/message-listener`;
 
 let socket: WebSocket | null = null;
 const callbacks: { [event: string]: EventListener[] } = {};

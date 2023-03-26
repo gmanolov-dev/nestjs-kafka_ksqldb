@@ -27,17 +27,16 @@ class StartWebsocketCommand extends Command {
 
   protected function execute(InputInterface $input, OutputInterface $output): int
   {
-    $server = IoServer::factory(
-      new HttpServer(
-          new WsServer(
-              $this -> ms
-          )
-      ),
-      3001
+    $wsServer = new WsServer(
+      $this -> ms
     );
-    $loop = $server->loop;
 
+    $httpServe = new HttpServer(
+      $wsServer
+    );
     
+    $server = IoServer::factory($httpServe, 3001);
+    $loop = $server->loop;
 
     Scheduler::setDefaultFactory(function() use($loop){
         return new Scheduler\EventLoopScheduler($loop);
