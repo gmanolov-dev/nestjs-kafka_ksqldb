@@ -20,7 +20,7 @@ class StartWebsocketCommand extends Command {
   protected static $defaultDesctiption = "Starts ratchet websocket";
   protected MessageService $ms;
 
-  public function __construct(MessageService $ms, string $kafkaBrokers) {
+  public function __construct(MessageService $ms) {
     parent::__construct();
     $this -> ms = $ms;
   }

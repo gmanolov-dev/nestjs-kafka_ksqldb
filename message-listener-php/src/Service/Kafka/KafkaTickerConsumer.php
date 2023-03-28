@@ -25,7 +25,7 @@ class KafkaTickerConsumer
 
   private function init()
   {
-    $topics = array_values(array_map(function ($el) { return $el["topic"]; }, $this->kafkaTickerConsumerConfig->getConfig()));
+    $topics = array_values(array_map(fn ($el) => $el["topic"], $this->kafkaTickerConsumerConfig->getConfig()));
     foreach($this->kafkaTickerConsumerConfig->getConfig() as $key => $cf) {
       $this->subjects[$key] = new ReplaySubject(20);
       $this->configByTopic[$cf["topic"]] = $key;
@@ -69,7 +69,8 @@ class KafkaTickerConsumer
     if (!count($this->subjects)) {
       $this->init();
     }
-    return $this->subjects[$name]->filter(function ($el) use($name, $payload) { return $this->kafkaTickerConsumerConfig->getConfig()[$name]["filter"]($el, $payload);} );
+    $filter = $this->kafkaTickerConsumerConfig->getConfig()[$name]["filter"];
+    return $this->subjects[$name]->filter(fn ($el) => $filter($el, $payload) );
   }
 
   private function readMeassages(KafkaConsumer $consumer, int $messageCount): void 
